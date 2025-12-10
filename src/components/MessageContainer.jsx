@@ -4,6 +4,9 @@ import { useSocketContext } from '../contexts/SocketContext';
 import Message from './Message';
 import { styles } from '../styles/styles';
 
+const API_URL = "https://chat-app-backend-cd4s.onrender.com";
+
+
 const MessageContainer = ({ selectedConversation }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +21,7 @@ const MessageContainer = ({ selectedConversation }) => {
       if (!selectedConversation) return;
       setLoading(true);
       try {
-        const res = await fetch(`/api/message/${selectedConversation._id}`);
+        const res = await fetch(`${API_URL}/api/message/${selectedConversation._id}`);
         const data = await res.json();
         if (data.error) throw new Error(data.error);
         setMessages(data);
@@ -53,7 +56,7 @@ const MessageContainer = ({ selectedConversation }) => {
 
     setSending(true);
     try {
-      const res = await fetch(`/api/message/send/${selectedConversation._id}`, {
+      const res = await fetch(`${API_URL}/api/message/send/${selectedConversation._id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: messageInput }),
