@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAuthContext } from '../contexts/AuthContext';
 import { styles } from '../styles/styles';
 
+const API_URL = "https://chat-app-backend-cd4s.onrender.com";
+
 const Login = ({ onSwitchToSignup }) => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -12,7 +14,7 @@ const Login = ({ onSwitchToSignup }) => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userName, password }),
