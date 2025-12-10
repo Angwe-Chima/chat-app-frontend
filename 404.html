@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    // Get the base path from the vite.config.js
+    var path = location.pathname.split('/')[1];
+    if (path === 'chat-app') {
+      // Redirect to the index.html inside the chat-app subdirectory
+      location.replace('/chat-app/');
+    }
+  </script>
+</head>
+<body>
+  <h1>Redirecting...</h1>
+</body>
+</html>
