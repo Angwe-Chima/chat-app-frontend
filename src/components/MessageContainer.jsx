@@ -1,17 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
-import { useAuthContext } from '../contexts/AuthContext';
-import { useSocketContext } from '../contexts/SocketContext';
-import Message from './Message';
-import { styles } from '../styles/styles';
+import { useState, useEffect, useRef } from "react";
+import { useAuthContext } from "../contexts/AuthContext";
+import { useSocketContext } from "../contexts/SocketContext";
+import Message from "./Message";
+import { styles } from "../styles/styles";
 
 const API_URL = "https://chat-app-backend-cd4s.onrender.com";
-
 
 const MessageContainer = ({ selectedConversation }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
-  const [messageInput, setMessageInput] = useState('');
+  const [messageInput, setMessageInput] = useState("");
   const { authUser } = useAuthContext();
   const { socket } = useSocketContext();
   const messagesEndRef = useRef(null);
@@ -21,7 +20,14 @@ const MessageContainer = ({ selectedConversation }) => {
       if (!selectedConversation) return;
       setLoading(true);
       try {
-        const res = await fetch(`${API_URL}/api/message/${selectedConversation._id}`);
+        const res = await fetch(
+          `${API_URL}/api/message/${selectedConversation._id}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          }
+        );
         const data = await res.json();
         if (data.error) throw new Error(data.error);
         setMessages(data);
@@ -36,19 +42,22 @@ const MessageContainer = ({ selectedConversation }) => {
   }, [selectedConversation]);
 
   useEffect(() => {
-    socket?.on('newMessage', (newMessage) => {
+    socket?.on("newMessage", (newMessage) => {
       // Check if the message is from the currently selected conversation
       const senderId = newMessage.senderId?._id || newMessage.senderId;
-      if (senderId === selectedConversation?._id || newMessage.receiverId === authUser._id) {
+      if (
+        senderId === selectedConversation?._id ||
+        newMessage.receiverId === authUser._id
+      ) {
         setMessages((prev) => [...prev, newMessage]);
       }
     });
 
-    return () => socket?.off('newMessage');
+    return () => socket?.off("newMessage");
   }, [socket, selectedConversation, authUser._id]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = async () => {
@@ -56,15 +65,19 @@ const MessageContainer = ({ selectedConversation }) => {
 
     setSending(true);
     try {
-      const res = await fetch(`${API_URL}/api/message/send/${selectedConversation._id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: messageInput }),
-      });
+      const res = await fetch(
+        `${API_URL}/api/message/send/${selectedConversation._id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ message: messageInput }),
+        }
+      );
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       setMessages([...messages, data]);
-      setMessageInput('');
+      setMessageInput("");
     } catch (error) {
       alert(error.message);
     } finally {
@@ -73,7 +86,7 @@ const MessageContainer = ({ selectedConversation }) => {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -105,7 +118,11 @@ const MessageContainer = ({ selectedConversation }) => {
         ) : (
           <>
             {messages.map((message) => (
-              <Message key={message._id} message={message} authUser={authUser} />
+              <Message
+                key={message._id}
+                message={message}
+                authUser={authUser}
+              />
             ))}
             <div ref={messagesEndRef} />
           </>
@@ -121,8 +138,12 @@ const MessageContainer = ({ selectedConversation }) => {
           onKeyPress={handleKeyPress}
           style={styles.messageInput}
         />
-        <button onClick={handleSend} disabled={sending} style={styles.sendButton}>
-          {sending ? '...' : 'Send'}
+        <button
+          onClick={handleSend}
+          disabled={sending}
+          style={styles.sendButton}
+        >
+          {sending ? "..." : "Send"}
         </button>
       </div>
     </div>
