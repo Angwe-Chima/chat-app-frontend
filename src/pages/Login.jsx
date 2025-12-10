@@ -18,9 +18,9 @@ const Login = ({ onSwitchToSignup }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userName, password }),
+        credentials: 'include',
       });
 
-      // Check if response is ok
       if (!res.ok) {
         let errorMessage = 'Login failed';
         try {

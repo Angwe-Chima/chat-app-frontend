@@ -27,11 +27,10 @@ const Signup = ({ onSwitchToLogin }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
+        credentials: 'include',
       });
 
-      // Check if response is ok
       if (!res.ok) {
-        // Try to parse error message
         let errorMessage = 'Signup failed';
         try {
           const errorData = await res.json();

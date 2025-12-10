@@ -27,12 +27,11 @@ export const SocketProvider = ({ children }) => {
         reconnectionAttempts: 5,
       });
 
-      newSocket.on("connect", () => {
-        console.log("Socket connected:", newSocket.id);
-      });
+      // newSocket.on("connect", () => {
+      //   console.log("Socket connected:", newSocket.id);
+      // });
 
       newSocket.on("getOnlineUsers", (users) => {
-        console.log("Online users:", users);
         setOnlineUsers(users);
       });
 
