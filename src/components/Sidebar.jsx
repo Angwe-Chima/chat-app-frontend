@@ -1,3 +1,4 @@
+/* --- components/Sidebar.jsx --- */
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useSocketContext } from "../contexts/SocketContext";
@@ -7,11 +8,11 @@ import { Conversation } from "./Conversation";
 export const Sidebar = ({ onSelectConversation, selectedConversation }) => {
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { authUser, setAuthUser } = useAuthContext();
+  const { authUser, logout } = useAuthContext();
   const { onlineUsers } = useSocketContext();
 
   useEffect(() => {
-    if (!authUser) return; // wait for login
+    if (!authUser) return;
 
     const getConversations = async () => {
       setLoading(true);
@@ -31,10 +32,10 @@ export const Sidebar = ({ onSelectConversation, selectedConversation }) => {
   const handleLogout = async () => {
     try {
       await apiCall("/api/auth/logout", { method: "POST" });
-      localStorage.removeItem("chat-user");
-      setAuthUser(null);
+      logout();
     } catch (err) {
       console.error("Logout failed:", err.message);
+      logout();
     }
   };
 
