@@ -1,13 +1,11 @@
-import { useState, createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
-// Export the custom hook
 export const useAuthContext = () => {
   return useContext(AuthContext);
 };
 
-// Export the provider
 export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(
     JSON.parse(localStorage.getItem('chat-user')) || null
